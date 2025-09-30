@@ -1,25 +1,25 @@
+-- TODO
+{-# LANGUAGE OverloadedRecordDot #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-import Data.Monoid (mappend)
 import Hakyll
+import Text.Blaze.Html5 hiding (main)
+import Text.Blaze.Html5.Attributes as A
 
-archive = do
-  "Here you can find my old posts"
-  ul $ mapM (\post -> li $ a ! href (post . url) ((post . title) <> " - " <> (post . date)))
-
-index = do
+index :: [a] -> Html
+index posts = do
   h2 "Welcome"
   img ! src "/images/haskell-logo.png" ! A.style "float: right; margin: 10px;"
   p "Welcome to my blog!"
-  p "I've reproduced a list of recent posts here for your reading pleasure:"
-  h2 "Posts"
+  h2 "This is what I have written about:"
+  ul $ mapM_ (\post -> li $ a ! href post.url $ post.title <> " - " <> post.date) posts
   "$partial(\"templates/post-list.html\")$"
   p $ do
     "…or you can find more in the"
     a ! href "/archive.html" $ "archives"
     "."
 
-defaultHTML :: String -> HTML -> HTML
+defaultHTML :: String -> Html -> Html
 defaultHTML title body = docTypeHtml ! lang "en" $ do
   H.head $ do
     meta ! charset "utf-8"
@@ -32,10 +32,7 @@ defaultHTML title body = docTypeHtml ! lang "en" $ do
       H.div ! class_ "logo" $ a ! href "/" $ "My Hakyll Blog"
       nav $ do
         a ! href "/" $ "Home"
-        a ! href "/about.html" $ "About"
-        a ! href "/contact.html" $ "Contact"
-        a ! href "/archive.html" $ "Archive"
-    main $ do
+    dev ! class_ "user-content" $ do
       h1 title
       body
     footer $ do
@@ -45,16 +42,7 @@ defaultHTML title body = docTypeHtml ! lang "en" $ do
 --------------------------------------------------------------------------------
 main :: IO ()
 main = hakyll $ do
-  match "css/*.css" $ route idRoute >> compile compressCssCompiler
-
-  match "images/*" $ route idRoute >> compile copyFileCompiler
-
-  match (fromList ["about.rst", "contact.markdown"]) $ do
-    route $ setExtension "html"
-    compile $
-      pandocCompiler
-        >>= loadAndApplyTemplate "templates/default.html" defaultContext
-        >>= relativizeUrls
+  match "static/*" $ route idRoute >> compile copyFileCompiler
 
   match "posts/*" $ do
     route $ setExtension "html"
@@ -64,27 +52,11 @@ main = hakyll $ do
         >>= loadAndApplyTemplate "templates/default.html" postCtx
         >>= relativizeUrls
 
-  create ["archive.html"] $ do
-    route idRoute
-    compile $ do
-      posts <- recentFirst =<< loadAll "posts/*"
-      let archiveCtx =
-            listField "posts" postCtx (return posts)
-              `mappend` constField "title" "Archives"
-              `mappend` defaultContext
-
-      makeItem ""
-        >>= loadAndApplyTemplate "templates/archive.html" archiveCtx
-        >>= loadAndApplyTemplate "templates/default.html" archiveCtx
-        >>= relativizeUrls
-
   match "index.html" $ do
     route idRoute
     compile $ do
       posts <- recentFirst =<< loadAll "posts/*"
-      let indexCtx =
-            listField "posts" postCtx (return posts)
-              `mappend` defaultContext
+      let indexCtx = listField "posts" postCtx (pure posts) <> defaultContext
 
       getResourceBody
         >>= applyAsTemplate indexCtx
@@ -97,4 +69,4 @@ main = hakyll $ do
 postCtx :: Context String
 postCtx =
   dateField "date" "%B %e, %Y"
-    `mappend` defaultContext
+    <> defaultContext
