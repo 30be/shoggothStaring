@@ -3,12 +3,13 @@ title: Lex-Durov interview
 date: 2025-10-01
 ---
 
-## For anyone reading this - it is just a random test note.
+::: warning
+For anyone reading this - it is just a random test note.
 
 It will be drastically changed or even removed later.
+:::
 
 [The interview](https://www.youtube.com/watch?v=qjPH9njnaVU)
-
 
 I can't help it, but I like this kind of people.
 
@@ -18,12 +19,11 @@ Strangely, [many people laugh at them](https://www.reddit.com/r/KafkaFPS/comment
 
 I actually agree with this. I have bought a cheap used phone for 20 dollars. It is a Samsung galaxy A50, 3GB ram.
 
-Theoretically, there does not exist an app(not game) that cannot be launched on this thing. It runs modern Android, and 32 GB of memory is enough if you don't do photography. 
+Theoretically, there does not exist an app(not game) that cannot be launched on this thing. It runs modern Android, and 32 GB of memory is enough if you don't do photography.
 
 But as you can guess, it is extremely slow. Even a simple unlocking on can take as much as 5 seconds.
 
 Yet that is the point. Is it very unappealing to use this glowing rectangle. You get bored.
-
 
 I also own a Samsung watch, that costs ten times as much. The only reason I can [afford](attention is your scarcest resource benkuhn) it, is because it does not have a media feed, no matter how funny it sounds. I use it to take calls, because, society. Also, alarms, biking, setting timers, and getting the weather.
 
@@ -48,12 +48,11 @@ Yet I have never managed to just lie in the bed for hours. I had always gotten a
 
 It is terrible, and no better now. I need to do something with it.
 
-
 > If you open your phone first thing in the morning, what you end up being is a creature that is told what to think about for the rest of the day.
 
 That is quite a bold quote, I have added it to anki
 
-> I founded one of the largest social networks in the world, after which i founded the second largest messaging app in the world, and... you're supposed to be really connected. 
+> I founded one of the largest social networks in the world, after which i founded the second largest messaging app in the world, and... you're supposed to be really connected.
 
 HAHAHA
 That is really the case when the dealer does not consume the product.
@@ -66,11 +65,10 @@ That is really the case when the dealer does not consume the product.
 
 I dont really think that i need to reduce my consumption of information any further. There is RSS, and i really think that I should keep it. Perhaps reduce, but keep in general.
 
-
 > One of the reasons I never had a depression is that I start doing things. I identify the problem, i can see the solution, and I start executing the strategy. If you are stuck in this loop of being worried about something, nothing's ever going to change.
 Eliezer yudkowski has actually [written about this](https://www.lesswrong.com/posts/9o3QBg2xJXcRCxGjS/working-hurts-less-than-procrastinating-we-fear-the-twinge)
 
-This is exactly what I have with my BIOCAD problem right now. 
+This is exactly what I have with my BIOCAD problem right now.
 
 And many different things in life as well.
 
@@ -80,15 +78,23 @@ I need to publish that and commit. And post daily reviews of what did i do that 
 
 TODO: Make a commitment.md and, well, commit.
 
-
 Continuing:
 
 > And people often make this mistake, thinking "Oh, I should just have some rest and then regain energy"
 21:51
 
-And here I went to sleep, as always these days -at 3 am. 
+And here I went to sleep, as always these days -at 3 am.
 But today, I have put my laptop on my bookshelf, not to use it in the morning.
 
-
-Image test:
+**Image test:**
 ![Cat image - caption](../static/cat.jpg )
+
+I will add something here
+
+```python
+print("This is a test of a code block")
+for i in range(10):
+  pass
+```
+
+Тут немного написано и по-русски

@@ -1,6 +1,8 @@
+import Data.Text (pack, stripSuffix)
 import Hakyll
 import Text.Blaze.Html.Renderer.String
 import Text.Blaze.Html5 as H hiding (main)
+import qualified Text.Blaze.Html5 as HTML (main)
 import Text.Blaze.Html5.Attributes as A
 
 makeIndex :: [Item String] -> Compiler (Item String)
@@ -12,38 +14,56 @@ makeIndex posts = do
 
   makeItem $ renderHtml $ do
     h2 "Welcome"
-    img ! src "/images/haskell-logo.png" ! A.style "float: right; margin: 10px;"
     p "Welcome to my blog!"
     h2 "This is what I have written about:"
-    ul $ forM_ postsData $ \(title, date, url) -> li $ a ! href (toValue url) $ toHtml title <> " - " <> toHtml date
+    ul $ forM_ postsData $ \(title, date, url) ->
+      let strip url = toValue $ fromMaybe url $ stripSuffix ".html" url
+       in li $ a ! href (strip $ pack url) $ toHtml title <> " - " <> toHtml date
 
 defaultTemplate :: Item String -> Compiler (Item String)
 defaultTemplate item = do
   title <- fromMaybe "" <$> getMetadataField (itemIdentifier item) "title"
   let
+    headerLinks = [("/", "Home"), ("/about", "About"), ("/rss.xml", "RSS"), ("https://github.com/30be", "GitHub"), ("https://t.me/cgsg162", "Telegram")]
     defaultHTML contents = docTypeHtml ! lang "en" $ do
       H.head $ do
+        H.title $ "shoggothStaring" <> (if null title then "" else " :: ") <> toHtml title
         meta ! charset "utf-8"
         meta ! httpEquiv "x-ua-compatible" ! content "ie=edge"
         meta ! name "viewport" ! content "width=device-width, initial-scale=1"
-        H.title $ "shoggothStaring" <> (if null title then "" else " :: ") <> toHtml title
-        link ! rel "stylesheet" ! href "/static/default.css"
-      body $ do
-        header $ H.div ! class_ "logo" $ a ! href "/" $ "My Hakyll Blog"
+        meta ! name "color-scheme" ! content "light dark"
+        link ! rel "stylesheet" ! href "https://cdn.jsdelivr.net/npm/sakura.css/css/sakura.css" ! media "screen"
+        link ! rel "stylesheet" ! href "https://cdn.jsdelivr.net/npm/sakura.css/css/sakura-vader.css" ! media "screen and (prefers-color-scheme: dark)"
+        link ! rel "stylesheet" ! href "/static/pandoc-pygments.css" ! media "screen and not (prefers-color-scheme: dark)"
+        link ! rel "stylesheet" ! href "/static/pandoc-zenburn.css" ! media "screen and (prefers-color-scheme: dark)"
+        link ! rel "stylesheet" ! href "/static/style.css"
+      body ! A.style "font-family: 'Roboto', sans-serif" $ HTML.main ! class_ "container" $ do
+        nav $ forM_ (zip [0 ..] headerLinks) $ \(index, (link, label)) -> do
+          a ! href link $ label
+          when (index < length headerLinks - 1) " | "
+
+        -- And now with a list
         H.div ! class_ "user-content" $ contents
+        footer $ do
+          hr -- Pico uses <hr> for horizontal separators
+          p $ do
+            "© 2025 LS4. The page source and code are available on "
+            a ! href "https://github.com/30be/shoggothStaring" $ "GitHub"
+            "."
   pure $ renderHtml . defaultHTML . preEscapedToHtml <$> item
 
 postTemplate :: Item String -> Compiler (Item String)
 postTemplate item = do
-  [title, date] <- forM ["title", "date"] $ getMetadataField' (itemIdentifier item)
-  let postHTML contents = do
-        h1 $ toHtml title
-        h4 $ toHtml date
+  [title, date] <- forM ["title", "date"] $ fmap toHtml . getMetadataField' (itemIdentifier item)
+  let postHTML contents = article $ do
+        h1 title
+        small date
         contents
   pure $ renderHtml . postHTML . preEscapedToHtml <$> item
 
 main :: IO ()
 main = hakyll $ do
+  match "static/*.css" $ route idRoute >> compile compressCssCompiler
   match "static/*" $ route idRoute >> compile copyFileCompiler
 
   match "posts/*" $ do
@@ -70,7 +90,7 @@ makeFeed render targets =
     FeedConfiguration
       { feedTitle = "shoggothStaring"
       , feedDescription = "Thoughts about now and future, written mostly for myself."
-      , feedAuthorName = "Lykd"
+      , feedAuthorName = "LS4"
       , feedAuthorEmail = "lykd@pm.me"
       , feedRoot = "https://shoggothstaring.com"
       }
