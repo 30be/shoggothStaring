@@ -1,7 +1,8 @@
---- 
-title: Me
-date: 2025-10-03
 ---
+title: Me
+date: 2025-10-02
+---
+
 I have a strong interest in computer science, with experience in C++, Vulkan, JavaScript, Python, Haskell.
 
 Outside of programming, I enjoy reading science fiction, self-improving, skiing, watching YouTube, and studying, of course. I am currently learning German and Japanese, my username in Duolingo is ```deeear```. Digital minimalism is the way, so I try not to use the phone much.
