@@ -8,8 +8,6 @@ title: Home
 >
 > -- <cite>[Gwern](https://gwern.net)</cite>
 
-Welcome to my blog.
-
-[About me](me.md)
+Welcome to [my](me) [blog](about).
 
 This is what I have written about:

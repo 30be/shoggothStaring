@@ -17,4 +17,5 @@ I find the problem of the AI emergence in the following 5 years highly underrate
 ### Contact
 
 E-mail: <ls4@shoggothstaring.com>
+
 Feel free to write me about anything, I will be happy.
