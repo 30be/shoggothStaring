@@ -1,3 +1,6 @@
 # This file is for the nvim markdown linter
 default: true
 MD013: false # Disable the Line length rule
+MD041: false # First line heading
+MD033: false # Allow inline html
+MD036: false # Emphasis as heading

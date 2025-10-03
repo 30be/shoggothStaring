@@ -1,30 +1,29 @@
-import Data.Text (pack, stripSuffix)
+import Data.Text (stripSuffix)
 import Hakyll
 import Text.Blaze.Html.Renderer.String
 import Text.Blaze.Html5 as H hiding (main)
 import qualified Text.Blaze.Html5 as HTML (main)
 import Text.Blaze.Html5.Attributes as A
 
-makeIndex :: [Item String] -> Compiler (Item String)
-makeIndex posts = do
+index :: [Item String] -> Item String -> Compiler (Item String)
+index posts text = do
   postsData <- forM posts $ \item -> do
     [title, date] <- forM ["title", "date"] $ getMetadataField' (itemIdentifier item)
     route <- getRoute $ itemIdentifier item
-    return (title, date, fromMaybe "#" route)
-
-  makeItem $ renderHtml $ do
-    h2 "Welcome"
-    p "Welcome to my blog!"
-    h2 "This is what I have written about:"
+    return (title, date, route ?: "#")
+  pure $ compile postsData <$> text
+ where
+  compile postsData text = renderHtml $ do
+    preEscapedToHtml text
     ul $ forM_ postsData $ \(title, date, url) ->
-      let strip url = toValue $ fromMaybe url $ stripSuffix ".html" url
-       in li $ a ! href (strip $ pack url) $ toHtml title <> " - " <> toHtml date
+      let strip url = toValue $ stripSuffix ".html" url ?: url
+       in li $ a ! href (strip $ toText url) $ toHtml title <> " - " <> toHtml date
 
 defaultTemplate :: Item String -> Compiler (Item String)
 defaultTemplate item = do
-  title <- fromMaybe "" <$> getMetadataField (itemIdentifier item) "title"
+  title <- maybeToMonoid <$> getMetadataField (itemIdentifier item) "title"
   let
-    headerLinks = [("/", "Home"), ("/about", "About"), ("/rss.xml", "RSS"), ("https://github.com/30be", "GitHub"), ("https://t.me/cgsg162", "Telegram")]
+    headerLinks = [("/", "Home"), ("/about", "About"), ("/rss.xml", "RSS"), ("https://github.com/30be", "GitHub"), ("https://t.me/ls4wrong", "Telegram")]
     defaultHTML contents = docTypeHtml ! lang "en" $ do
       H.head $ do
         H.title $ "shoggothStaring" <> (if null title then "" else " :: ") <> toHtml title
@@ -66,13 +65,15 @@ main = hakyll $ do
   match "static/*.css" $ route idRoute >> compile compressCssCompiler
   match "static/*" $ route idRoute >> compile copyFileCompiler
 
+  match "index.md" $ do
+    route $ setExtension "html"
+    compile $ do
+      posts <- recentFirst =<< loadAll "posts/*"
+      pandocCompiler >>= index posts >>= defaultTemplate >>= relativizeUrls
+
   match "posts/*" $ do
     route $ gsubRoute "posts/" (const "") `composeRoutes` setExtension "html"
     compile $ pandocCompiler >>= postTemplate >>= saveSnapshot "content" >>= defaultTemplate >>= relativizeUrls
-
-  create ["index.html"] $ do
-    route idRoute
-    compile $ loadAll "posts/*" >>= recentFirst >>= makeIndex >>= defaultTemplate >>= relativizeUrls
 
   makeFeed renderAtom ["atom.xml", "feed.atom"]
   makeFeed renderRss ["feed.rss", "rss.xml", "feed", "rss"]
