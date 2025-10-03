@@ -11,3 +11,21 @@
     margin-top: 0;
     margin-bottom: 0;
 }
+
+
+.main-nav {
+    display: flex;
+    justify-content: space-between;
+}
+
+
+#search-input {
+    width: 100px;
+    padding: 4px 8px; /* Adjust padding to match surrounding text height better */
+    font-size: 1em; /* Inherit font size */
+}
+
+#search-results {
+    border: 1px solid var(--text-color);
+    z-index: 100;
+}
