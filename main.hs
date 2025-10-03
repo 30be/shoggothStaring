@@ -1,23 +1,24 @@
+{-# OPTIONS_GHC -Wno-orphans #-}
+
 import Data.Text (stripSuffix)
 import Hakyll
-import Text.Blaze.Html.Renderer.String
+import Text.Blaze.Html.Renderer.String (renderHtml)
 import Text.Blaze.Html5 as H hiding (main)
 import qualified Text.Blaze.Html5 as HTML (main)
 import Text.Blaze.Html5.Attributes as A
 
-index :: [Item String] -> Item String -> Compiler (Item String)
-index posts text = do
+indexCompiler :: [Item String] -> Item String -> Compiler (Item String)
+indexCompiler posts text = do
   postsData <- forM posts $ \item -> do
     [title, date] <- forM ["title", "date"] $ getMetadataField' (itemIdentifier item)
     route <- getRoute $ itemIdentifier item
     return (title, date, route ?: "#")
-  pure $ compile postsData <$> text
-  where
-    compile postsData text = renderHtml $ do
-      preEscapedToHtml text
-      ul $ forM_ postsData $ \(title, date, url) ->
-        let strip url = toValue $ stripSuffix ".html" url ?: url
-         in li $ a ! href (strip $ toText url) $ toHtml title <> " - " <> toHtml date
+
+  let strip url = toValue $ stripSuffix ".html" url ?: url
+      renderText text = renderHtml $ do
+        preEscapedToHtml text
+        ul $ forM_ postsData $ \(title, date, url) -> li $ a ! href (strip $ toText url) $ toHtml $ title <> " - " <> date
+  pure $ renderText <$> text
 
 defaultTemplate :: Item String -> Compiler (Item String)
 defaultTemplate item = do
@@ -40,15 +41,14 @@ defaultTemplate item = do
             a ! href link $ label
             when (index < length headerLinks - 1) " | "
 
-          -- And now with a list
-          H.div ! class_ "user-content" $ contents
+          H.article ! class_ "user-content" $ contents
           footer $ do
-            hr -- Pico uses <hr> for horizontal separators
+            hr
             p $ do
               "© 2025 LS4. The page source and code are available on "
               a ! href "https://github.com/30be/shoggothStaring" $ "GitHub"
               "."
-  pure $ renderHtml . defaultHTML . preEscapedToHtml <$> item
+  relativizeUrls $ renderHtml . defaultHTML . preEscapedToHtml <$> item
 
 postTemplate :: Item String -> Compiler (Item String)
 postTemplate item = do
@@ -68,11 +68,11 @@ main = hakyll $ do
     route $ setExtension "html"
     compile $ do
       posts <- recentFirst =<< loadAll "posts/*"
-      pandocCompiler >>= index posts >>= defaultTemplate >>= relativizeUrls
+      pandocCompiler >>= indexCompiler posts >>= defaultTemplate
 
   match "posts/*" $ do
     route $ gsubRoute "posts/" (const "") `composeRoutes` setExtension "html"
-    compile $ pandocCompiler >>= postTemplate >>= saveSnapshot "content" >>= defaultTemplate >>= relativizeUrls
+    compile $ pandocCompiler >>= postTemplate >>= saveSnapshot "content" >>= defaultTemplate
 
   makeFeed renderAtom ["atom.xml", "feed.atom"]
   makeFeed renderRss ["feed.rss", "rss.xml", "feed", "rss"]
@@ -81,12 +81,9 @@ makeFeed :: (FeedConfiguration -> Context String -> [Item String] -> Compiler (I
 makeFeed render targets =
   create targets $ do
     route idRoute
-    compile $ do
-      let feedCtx = defaultContext <> bodyField "description"
-      posts <- fmap (take 10) . recentFirst =<< loadAllSnapshots "posts/*" "content"
-      render feedConfiguration feedCtx posts
+    compile $ loadAllSnapshots "posts/*" "content" >>= fmap (take 10) . recentFirst >>= render configuration (defaultContext <> bodyField "description")
   where
-    feedConfiguration =
+    configuration =
       FeedConfiguration
         { feedTitle = "shoggothStaring",
           feedDescription = "Thoughts about now and future, written mostly for myself.",
