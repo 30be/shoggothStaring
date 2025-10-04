@@ -50,10 +50,10 @@ defaultTemplate item = do
         meta ! name "color-scheme" ! content "light dark"
         link ! rel "stylesheet" ! href "https://cdn.jsdelivr.net/npm/sakura.css/css/sakura.css" ! media "screen"
         link ! rel "stylesheet" ! href "https://cdn.jsdelivr.net/npm/sakura.css/css/sakura-vader.css" ! media "screen and (prefers-color-scheme: dark)"
-        link ! rel "stylesheet" ! href "/static/pandoc-pygments.css" ! media "screen and not (prefers-color-scheme: dark)"
-        link ! rel "stylesheet" ! href "/static/pandoc-zenburn.css" ! media "screen and (prefers-color-scheme: dark)"
-        link ! rel "stylesheet" ! href "/static/style.css"
-        script ! src "/static/search.js" $ mempty
+        link ! rel "stylesheet" ! href "pandoc-pygments.css" ! media "screen and not (prefers-color-scheme: dark)"
+        link ! rel "stylesheet" ! href "pandoc-zenburn.css" ! media "screen and (prefers-color-scheme: dark)"
+        link ! rel "stylesheet" ! href "style.css"
+        script ! src "search.js" $ mempty
       body $ do
         nav ! class_ "main-nav" $ do
           forM_ headerLinks $ \(link, label) -> (a ! href link $ label) >> " | "
@@ -79,9 +79,7 @@ postTemplate item = do
 
 main :: IO ()
 main = hakyll $ do
-  match "static/*.css" $ route idRoute >> compile compressCssCompiler
-  match "static/favicon.ico" $ route (gsubRoute "static/" (const "")) >> compile copyFileCompiler
-  match "static/*" $ route idRoute >> compile copyFileCompiler
+  match "static/*" $ route (gsubRoute "static/" (const "")) >> compile copyFileCompiler
   match "index.md" $ do
     route $ setExtension "html"
     compile $ do
