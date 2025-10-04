@@ -5,7 +5,7 @@ fetch('/search.json')
     const resultsContainer = document.getElementById('search-results')
     const searchPosts = posts.map(post => ({
       ...post,
-      postTitle: post.postTitle.toLowerCase(),
+      searchTitle: post.postTitle.toLowerCase(),
       postContent: post.postContent.toLowerCase(),
     }));
     const updateResults = (e) => {
@@ -14,7 +14,7 @@ fetch('/search.json')
       if (query.length < 2) return;
 
       const filtered = searchPosts.filter(post =>
-        post.postTitle.includes(query) ||
+        post.searchTitle.includes(query) ||
         post.postContent.includes(query)
       );
 
