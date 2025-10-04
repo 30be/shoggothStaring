@@ -6,8 +6,7 @@ import Data.Aeson
 import Data.Text (stripSuffix)
 import Hakyll
 import Text.Blaze.Html.Renderer.String (renderHtml)
-import Text.Blaze.Html5 as H hiding (main, object)
-import qualified Text.Blaze.Html5 as HTML (main)
+import Text.Blaze.Html5 as H hiding (main)
 import Text.Blaze.Html5.Attributes as A
 
 data PostData = PostData
@@ -40,11 +39,12 @@ indexCompiler posts text = fmap . renderText <$> traverse getPostData posts ?? t
         li $ a ! href (strip $ toText postRoute) $ toHtml $ postTitle <> " - " <> postDate
 
 defaultTemplate :: Item String -> Compiler (Item String)
-defaultTemplate item =
-  getMetadataField (itemIdentifier item) "title" >>= \title ->
-    relativizeUrls $ renderHtml . defaultHTML (maybeToMonoid title) . preEscapedToHtml <$> item
+defaultTemplate item = do
+  title <- getMetadataField (itemIdentifier item) "title"
+  relativizeUrls $ renderHtml . defaultHTML (maybeToMonoid title) . preEscapedToHtml <$> item
   where
     headerLinks = [("/", "Home"), ("/about", "About"), ("/me", "Me"), ("/rss.xml", "RSS")]
+    defaultHTML :: String -> Html -> Html
     defaultHTML title contents = docTypeHtml ! lang "en" $ do
       H.head $ do
         H.title $ "shoggothStaring" <> (if null title then "" else " :: ") <> toHtml title
@@ -58,13 +58,13 @@ defaultTemplate item =
         link ! rel "stylesheet" ! href "/static/pandoc-zenburn.css" ! media "screen and (prefers-color-scheme: dark)"
         link ! rel "stylesheet" ! href "/static/style.css"
         script ! src "/static/search.js" $ mempty
-      body ! A.style "font-family: 'Roboto', sans-serif" $ HTML.main ! class_ "container" $ do
+      body $ do
         nav ! class_ "main-nav" $ do
           forM_ headerLinks $ \(link, label) -> (a ! href link $ label) >> " | "
           input ! type_ "text" ! A.id "search-input" ! placeholder "Search..."
 
         H.div ! A.id "search-results" $ mempty
-        H.article ! class_ "user-content" $ contents
+        article ! class_ "user-content" $ contents
         footer $ do
           hr
           p $ do
@@ -75,7 +75,7 @@ defaultTemplate item =
 postTemplate :: Item String -> Compiler (Item String)
 postTemplate item = do
   [title, date] <- fmap toHtml <$> forM ["title", "date"] (getMetadataField' (itemIdentifier item))
-  let postHTML contents = article $ do
+  let postHTML contents = do
         h1 title
         small date
         contents

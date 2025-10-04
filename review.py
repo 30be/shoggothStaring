@@ -26,7 +26,7 @@ system_instruction = (
     "You are a university literature teacher. "
     "Analyze the essay and return a strict JSON array of problems, "
     "or an empty array if the essay is flawless. "
-    "The essay style is informal internet writing. "
+    "The essay style is very informal internet writing. "
 )
 
 schema = types.Schema(
