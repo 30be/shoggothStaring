@@ -1,5 +1,6 @@
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE RecordWildCards #-}
 
 import Data.Aeson
 import Data.Text (stripSuffix)
@@ -17,67 +18,63 @@ data PostData = PostData
   }
   deriving (Generic, ToJSON)
 
-getPostsData :: [Item a] -> Compiler [PostData]
-getPostsData posts = forM posts $ \item -> do
-  [title, date] <- forM ["title", "date"] $ getMetadataField' (itemIdentifier item)
-  let getRoute' i = fromMaybe (error $ "Route not found for " <> show i) <$> getRoute i
-  route <- getRoute' $ itemIdentifier item
-  content <- loadBody $ itemIdentifier item
-  return $ PostData title date route content
+getPostData :: Item a -> Compiler PostData
+getPostData =
+  itemIdentifier >>> \postID ->
+    PostData
+      <$> getMetadataField' postID "title"
+      <*> getMetadataField' postID "date"
+      <*> (fromMaybe (fail $ "Route not found for " <> show postID) <$> getRoute postID)
+      <*> loadBody postID
 
 jsonIndexCompiler :: [Item String] -> Compiler (Item String)
-jsonIndexCompiler = getPostsData >=> encode >>> decodeUtf8 >>> makeItem
+jsonIndexCompiler = traverse getPostData >=> encode >>> decodeUtf8 >>> makeItem
 
 indexCompiler :: [Item String] -> Item String -> Compiler (Item String)
-indexCompiler posts text = do
-  postsData <- forM posts $ \item -> do
-    [title, date] <- forM ["title", "date"] $ getMetadataField' (itemIdentifier item)
-    route <- getRoute $ itemIdentifier item
-    return (title, date, route ?: "#")
-
-  let strip url = toValue $ stripSuffix ".html" url ?: url
-      renderText text = renderHtml $ do
-        preEscapedToHtml text
-        ul $ forM_ postsData $ \(title, date, url) -> li $ a ! href (strip $ toText url) $ toHtml $ title <> " - " <> date
-  pure $ renderText <$> text
+indexCompiler posts text = fmap . renderText <$> traverse getPostData posts ?? text
+  where
+    strip url = toValue $ stripSuffix ".html" url ?: url
+    renderText postsData text = renderHtml $ do
+      preEscapedToHtml text
+      ul $ forM_ postsData $ \(PostData {..}) ->
+        li $ a ! href (strip $ toText postRoute) $ toHtml $ postTitle <> " - " <> postDate
 
 defaultTemplate :: Item String -> Compiler (Item String)
-defaultTemplate item = do
-  title <- maybeToMonoid <$> getMetadataField (itemIdentifier item) "title"
-  let headerLinks = [("/", "Home"), ("/about", "About"), ("/me", "Me"), ("/rss.xml", "RSS")]
-      defaultHTML contents = docTypeHtml ! lang "en" $ do
-        H.head $ do
-          H.title $ "shoggothStaring" <> (if null title then "" else " :: ") <> toHtml title
-          meta ! charset "utf-8"
-          meta ! httpEquiv "x-ua-compatible" ! content "ie=edge"
-          meta ! name "viewport" ! content "width=device-width, initial-scale=1"
-          meta ! name "color-scheme" ! content "light dark"
-          link ! rel "stylesheet" ! href "https://cdn.jsdelivr.net/npm/sakura.css/css/sakura.css" ! media "screen"
-          link ! rel "stylesheet" ! href "https://cdn.jsdelivr.net/npm/sakura.css/css/sakura-vader.css" ! media "screen and (prefers-color-scheme: dark)"
-          link ! rel "stylesheet" ! href "/static/pandoc-pygments.css" ! media "screen and not (prefers-color-scheme: dark)"
-          link ! rel "stylesheet" ! href "/static/pandoc-zenburn.css" ! media "screen and (prefers-color-scheme: dark)"
-          link ! rel "stylesheet" ! href "/static/style.css"
-          script ! src "/static/search.js" $ mempty
-        body ! A.style "font-family: 'Roboto', sans-serif" $ HTML.main ! class_ "container" $ do
-          nav ! class_ "main-nav" $ do
-            forM_ headerLinks $ \(link, label) -> (a ! href link $ label) >> " | "
+defaultTemplate item =
+  getMetadataField (itemIdentifier item) "title" >>= \title ->
+    relativizeUrls $ renderHtml . defaultHTML (maybeToMonoid title) . preEscapedToHtml <$> item
+  where
+    headerLinks = [("/", "Home"), ("/about", "About"), ("/me", "Me"), ("/rss.xml", "RSS")]
+    defaultHTML title contents = docTypeHtml ! lang "en" $ do
+      H.head $ do
+        H.title $ "shoggothStaring" <> (if null title then "" else " :: ") <> toHtml title
+        meta ! charset "utf-8"
+        meta ! httpEquiv "x-ua-compatible" ! content "ie=edge"
+        meta ! name "viewport" ! content "width=device-width, initial-scale=1"
+        meta ! name "color-scheme" ! content "light dark"
+        link ! rel "stylesheet" ! href "https://cdn.jsdelivr.net/npm/sakura.css/css/sakura.css" ! media "screen"
+        link ! rel "stylesheet" ! href "https://cdn.jsdelivr.net/npm/sakura.css/css/sakura-vader.css" ! media "screen and (prefers-color-scheme: dark)"
+        link ! rel "stylesheet" ! href "/static/pandoc-pygments.css" ! media "screen and not (prefers-color-scheme: dark)"
+        link ! rel "stylesheet" ! href "/static/pandoc-zenburn.css" ! media "screen and (prefers-color-scheme: dark)"
+        link ! rel "stylesheet" ! href "/static/style.css"
+        script ! src "/static/search.js" $ mempty
+      body ! A.style "font-family: 'Roboto', sans-serif" $ HTML.main ! class_ "container" $ do
+        nav ! class_ "main-nav" $ do
+          forM_ headerLinks $ \(link, label) -> (a ! href link $ label) >> " | "
+          input ! type_ "text" ! A.id "search-input" ! placeholder "Search..."
 
-            -- H.span ! A.id "search-container" $ do
-            input ! type_ "text" ! A.id "search-input" ! placeholder "Search..."
-
-          H.div ! A.id "search-results" $ mempty
-          H.article ! class_ "user-content" $ contents
-          footer $ do
-            hr
-            p $ do
-              "© 2025 LS4. The page source and code are available on "
-              a ! href "https://github.com/30be/shoggothStaring" $ "GitHub"
-              "."
-  relativizeUrls $ renderHtml . defaultHTML . preEscapedToHtml <$> item
+        H.div ! A.id "search-results" $ mempty
+        H.article ! class_ "user-content" $ contents
+        footer $ do
+          hr
+          p $ do
+            "© 2025 LS4. The page source and code are available on "
+            a ! href "https://github.com/30be/shoggothStaring" $ "GitHub"
+            "."
 
 postTemplate :: Item String -> Compiler (Item String)
 postTemplate item = do
-  [title, date] <- forM ["title", "date"] $ fmap toHtml . getMetadataField' (itemIdentifier item)
+  [title, date] <- fmap toHtml <$> forM ["title", "date"] (getMetadataField' (itemIdentifier item))
   let postHTML contents = article $ do
         h1 title
         small date
@@ -89,13 +86,11 @@ main = hakyll $ do
   match "static/*.css" $ route idRoute >> compile compressCssCompiler
   match "static/favicon.ico" $ route (gsubRoute "static/" (const "")) >> compile copyFileCompiler
   match "static/*" $ route idRoute >> compile copyFileCompiler
-
   match "index.md" $ do
     route $ setExtension "html"
     compile $ do
       posts <- recentFirst =<< loadAll "posts/*"
       pandocCompiler >>= indexCompiler posts >>= defaultTemplate
-
   match "posts/*" $ do
     route $ gsubRoute "posts/" (const "") `composeRoutes` setExtension "html"
     compile $ pandocCompiler >>= postTemplate >>= saveSnapshot "content" >>= defaultTemplate
