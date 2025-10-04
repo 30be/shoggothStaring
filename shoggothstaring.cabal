@@ -20,4 +20,6 @@ executable site
           , relude
   default-extensions: OverloadedStrings
                     , OverloadedRecordDot
-
+                    , DeriveAnyClass
+                    , DeriveGeneric
+                    , RecordWildCards

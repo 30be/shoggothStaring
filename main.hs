@@ -1,7 +1,3 @@
-{-# LANGUAGE DeriveAnyClass #-}
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE RecordWildCards #-}
-
 import Data.Aeson
 import Data.Text (stripSuffix)
 import Hakyll
@@ -89,22 +85,30 @@ main = hakyll $ do
   match "index.md" $ do
     route $ setExtension "html"
     compile $ do
-      posts <- recentFirst =<< loadAll "posts/*"
+      posts <- recentFirst =<< loadAll (fromVersion Nothing .&&. "posts/*")
       pandocCompiler >>= indexCompiler posts >>= defaultTemplate
+  match "posts/*" $ version "raw" $ do
+    route $ gsubRoute "posts/" (const "")
+    compile getResourceString
   match "posts/*" $ do
     route $ gsubRoute "posts/" (const "") `composeRoutes` setExtension "html"
     compile $ pandocCompiler >>= postTemplate >>= saveSnapshot "content" >>= defaultTemplate
-  makeFeed renderAtom ["atom.xml", "feed.atom"]
-  makeFeed renderRss ["feed.rss", "rss.xml", "feed", "rss"]
+
   create ["search.json"] $ do
     route idRoute
-    compile $ loadAllSnapshots "posts/*" "content" >>= jsonIndexCompiler
+    compile $ loadAll (fromVersion (Just "raw") .&&. "posts/*") >>= jsonIndexCompiler
+
+  makeFeed renderRss ["feed.rss", "rss.xml", "feed", "rss"]
+  makeFeed renderAtom ["atom.xml", "feed.atom"]
 
 makeFeed :: (FeedConfiguration -> Context String -> [Item String] -> Compiler (Item String)) -> [Identifier] -> Rules ()
 makeFeed render targets =
   create targets $ do
     route idRoute
-    compile $ loadAllSnapshots "posts/*" "content" >>= fmap (take 10) . recentFirst >>= render configuration (defaultContext <> bodyField "description")
+    compile $
+      loadAllSnapshots (fromVersion Nothing .&&. "posts/*") "content"
+        >>= fmap (take 10) . recentFirst
+        >>= render configuration (defaultContext <> bodyField "description")
   where
     configuration =
       FeedConfiguration

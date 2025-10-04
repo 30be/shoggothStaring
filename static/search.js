@@ -3,19 +3,25 @@ fetch('/search.json')
   .then(posts => {
     const input = document.getElementById('search-input');
     const resultsContainer = document.getElementById('search-results')
+    const posts = posts.map(post => ({
+      ...post,
+      postTitle: post.postTitle.toLowerCase(),
+      postContent: post.postContent.toLowerCase(),
+    }));
     const updateResults = (e) => {
       query = e.target.value.toLowerCase().trim()
       resultsContainer.innerHTML = '';
       if (query.length < 2) return;
 
       const filtered = posts.filter(post =>
-        post.postTitle.toLowerCase().includes(query) ||
-        post.postContent.toLowerCase().includes(query)
+        post.postTitle.includes(query) ||
+        post.postContent.includes(query)
       );
 
       const p = document.createElement('p');
       p.textContent = `${filtered.length} results found`
       resultsContainer.appendChild(p);
+
       if (filtered.length === 0) return;
 
       const results = document.createElement('ul');
@@ -28,7 +34,6 @@ fetch('/search.json')
         a.textContent = `${post.postTitle} (${post.postDate})`;
         li.appendChild(a);
         results.appendChild(li);
-        console.log("Updated" + results)
       });
     };
     input.addEventListener('input', updateResults)
