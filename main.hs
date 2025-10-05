@@ -13,6 +13,17 @@ data PostData = PostData
   }
   deriving (Generic, ToJSON)
 
+googleAnalyticsScript :: Html
+googleAnalyticsScript = do
+  let gaMeasurementId = "G-8Z3SYE9BYY" :: Text
+  script ! async "async" ! src ("https://www.googletagmanager.com/gtag/js?id=" <> toValue gaMeasurementId) $ mempty
+  (script . toHtml . unlines)
+    [ "window.dataLayer = window.dataLayer || [];",
+      "function gtag(){dataLayer.push(arguments);}",
+      "gtag('js', new Date());",
+      "gtag('config', '" <> gaMeasurementId <> "');"
+    ]
+
 getPostData :: Item a -> Compiler PostData
 getPostData =
   itemIdentifier >>> \postID ->
@@ -53,7 +64,8 @@ defaultTemplate item = do
         link ! rel "stylesheet" ! href "pandoc-pygments.css" ! media "screen and not (prefers-color-scheme: dark)"
         link ! rel "stylesheet" ! href "pandoc-zenburn.css" ! media "screen and (prefers-color-scheme: dark)"
         link ! rel "stylesheet" ! href "style.css"
-        script ! src "search.js" $ mempty
+        script ! async "async" ! src "search.js" $ mempty
+        googleAnalyticsScript
       body $ do
         nav ! class_ "main-nav" $ do
           forM_ headerLinks $ \(link, label) -> (a ! href link $ label) >> " | "
