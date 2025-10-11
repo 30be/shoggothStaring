@@ -16,7 +16,9 @@ load_dotenv()
 if "__PROXIED__" not in sys.argv:
     print("Starting proxy...")
     subprocess.run(
-        ["proxychains", "-q", "python", "scripts/review.py"] + ["__PROXIED__"]
+        ["proxychains", "-q", "python", "scripts/review.py"]
+        + ["__PROXIED__"]
+        + sys.argv[1:]
     )
     sys.exit()
 
@@ -52,9 +54,11 @@ schema = types.Schema(
     ),
 )
 
-for filename in os.listdir(posts_dir):
+
+def review(filename):
     if not filename.endswith(".md"):
-        continue
+        print(filename, "is not a markdown file")
+        return
 
     filepath = os.path.join(posts_dir, filename)
 
@@ -63,7 +67,7 @@ for filename in os.listdir(posts_dir):
             essay = f.read()
     except Exception as e:
         print(f"Error reading {filename}: {e}")
-        continue
+        return
 
     prompt = f"Critically review the following student essay titled '{filename}'.\n\nEssay:\n{essay}"
 
@@ -91,3 +95,10 @@ for filename in os.listdir(posts_dir):
 
     except Exception as e:
         print(f"Failed to review {filename}. JSON parsing or API error: {e}")
+
+
+if len(sys.argv) == 3:
+    review(sys.argv[2])
+else:
+    for filename in os.listdir(posts_dir):
+        review(filename)
