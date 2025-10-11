@@ -84,16 +84,10 @@ body {
             // Fixing syntax error in your original code: date.toISOString().split['T'](0)
             cell.title = `${date.toISOString().split('T')[0]}: ${count} reviews`;
 
-            let level = 0;
-            if (count <= 10) {
-                level = 1;
-            } else if (count <= 100) {
-                level = 2;
-            } else if (count <= 400) {
-                level = 3;
-            } else  {
-                level = 4;
-            }
+            const level = (count == 0) ? 0 :
+                          (count <= 10) ? 1 :
+                          (count <= 100) ? 2 :
+                          (count <= 400) ? 3 : 4;
             cell.className = `day-cell level-${level}`;
             HEATMAP.appendChild(cell);
 
