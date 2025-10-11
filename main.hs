@@ -92,10 +92,10 @@ postTemplate item = do
 main :: IO ()
 main = hakyll $ do
   match "static/*" $ route (gsubRoute "static/" (const "")) >> compile copyFileCompiler
-  match "index.md" $ do
-    route $ setExtension "html"
+  match "posts/index.md" $ do
+    route $ gsubRoute "posts/" (const "") `composeRoutes` setExtension "html"
     compile $ do
-      posts <- recentFirst =<< loadAll (fromVersion Nothing .&&. "posts/*")
+      posts <- recentFirst =<< loadAll (fromVersion Nothing .&&. posts)
       pandocCompiler >>= indexCompiler posts >>= defaultTemplate
   match "posts/*" $ version "raw" $ do
     route $ gsubRoute "posts/" (const "")
@@ -111,12 +111,15 @@ main = hakyll $ do
   makeFeed renderRss ["feed.rss", "rss.xml", "feed"]
   makeFeed renderAtom ["atom.xml", "feed.atom"]
 
+posts :: Pattern
+posts = "posts/*" .&&. complement (Hakyll.fromList ["posts/404.md", "posts/index.md", "posts/about.md", "posts/me.md"])
+
 makeFeed :: (FeedConfiguration -> Context String -> [Item String] -> Compiler (Item String)) -> [Identifier] -> Rules ()
 makeFeed render targets =
   create targets $ do
     route idRoute
     compile $
-      loadAllSnapshots (fromVersion Nothing .&&. "posts/*") "content"
+      loadAllSnapshots (fromVersion Nothing .&&. posts) "content"
         >>= fmap (take 10) . recentFirst
         >>= render configuration (defaultContext <> bodyField "description")
   where

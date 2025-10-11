@@ -72,7 +72,7 @@ last-update: 2025-10-10
 [![CPU Raytracer](T05RT.png){width=30%}](T05RT.png)
 Параллельный рендерер с поддержкой прозрачности, материалов, сложных объектов, загрузки моделей с текстурами
 
-#### [textbook-rss](TextbookRSS)
+#### [textbook-rss](https://github.com/30be/TextbookRSS)
 
 Небольшой проект на Python, позволяющий генерировать RSS-feed для любых книг.
 
@@ -80,7 +80,7 @@ last-update: 2025-10-10
 
 E-mail: <ls4@shoggothstaring.com>
 
-Telegram: [@cgsg162](t.me/cgsg162)
+Telegram: [@cgsg162](https://t.me/cgsg162)
 
 PGP:
 

@@ -72,7 +72,7 @@ A real-time 3D engine written from scratch in C++ with deferred lighting, transp
 [![CPU Raytracer](T05RT.png){width=30%}](T05RT.png)
 A parallel renderer with support for transparency, materials, complex objects, and loading models with textures.
 
-#### [textbook-rss](TextbookRSS)
+#### [textbook-rss](https://github.com/30be/TextbookRSS)
 
 A small Python project that allows generating an RSS feed for any book.
 
@@ -80,7 +80,7 @@ A small Python project that allows generating an RSS feed for any book.
 
 E-mail: <ls4@shoggothstaring.com>
 
-Telegram: [@cgsg162](t.me/cgsg162)
+Telegram: [@cgsg162](https://t.me/cgsg162)
 
 PGP:
 
