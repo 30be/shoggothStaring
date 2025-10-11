@@ -108,7 +108,7 @@ main = hakyll $ do
     route idRoute
     compile $ loadAll (fromVersion (Just "raw") .&&. "posts/*") >>= jsonIndexCompiler
 
-  makeFeed renderRss ["feed.rss", "rss.xml", "feed", "rss"]
+  makeFeed renderRss ["feed.rss", "rss.xml", "feed"]
   makeFeed renderAtom ["atom.xml", "feed.atom"]
 
 makeFeed :: (FeedConfiguration -> Context String -> [Item String] -> Compiler (Item String)) -> [Identifier] -> Rules ()

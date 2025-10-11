@@ -15,7 +15,9 @@ load_dotenv()
 
 if "__PROXIED__" not in sys.argv:
     print("Starting proxy...")
-    subprocess.run(["proxychains", "-q", "python", "review.py"] + ["__PROXIED__"])
+    subprocess.run(
+        ["proxychains", "-q", "python", "scripts/review.py"] + ["__PROXIED__"]
+    )
     sys.exit()
 
 
@@ -26,7 +28,11 @@ system_instruction = (
     "You are a university literature teacher. "
     "Analyze the essay and return a strict JSON array of problems, "
     "or an empty array if the essay is flawless. "
-    "The essay style is very informal internet writing. "
+    "The essay style is very informal internet writing. Keep that in mind."
+    "The essay will be used as content for an html page in a blog."
+    "So it can contain not only prose, but lists and links, so they may be formatted differently."
+    "Only notice a mistake when it is obvious that it exist, and there is no ambiguity."
+    "Think before you answer - perhaps I intended to write a sentence fragment, and it is not a mistake?"
 )
 
 schema = types.Schema(

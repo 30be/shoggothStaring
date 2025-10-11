@@ -29,3 +29,14 @@
     border: 1px solid var(--text-color);
     z-index: 100;
 }
+
+img {
+    float: left;
+    margin-right: 1.5em; 
+    margin-bottom: 0.5em; 
+}
+
+h1, h2, h3, h4, h5, h6 {
+    /* Запретить заголовкам занимать место слева, если там есть float-элемент */
+    clear: left;
+}
