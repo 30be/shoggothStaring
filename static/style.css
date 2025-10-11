@@ -1,3 +1,7 @@
+/* SPDX-License-Identifier: MIT
+ *  See LICENSE for details.
+*/
+
 .warning {
     padding: 1em;
     margin: 1.0em 0;
@@ -40,3 +44,21 @@ h1, h2, h3, h4, h5, h6 {
     /* Запретить заголовкам занимать место слева, если там есть float-элемент */
     clear: left;
 }
+
+canvas {
+    width: 100%;
+    height: auto;
+}
+
+iframe {
+    width: 100%;
+}
+
+label,
+input[type="range"] {
+  margin-left: 10px;
+  margin-right: 10px;
+  display: inline-block;
+  vertical-align: middle;
+}
+

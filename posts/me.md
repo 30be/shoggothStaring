@@ -8,7 +8,7 @@ last-update: 2025-10-10
 
 Hi. My name is Luka.
 
-I am passionate about programming, reading [blogs](rss), [meditation](meditation), and skiing.
+I am passionate about programming, reading [blogs](http://23.94.5.170:8080), meditation, and skiing.
 
 I have programming experience in the following languages:
 
@@ -23,12 +23,12 @@ I use Linux (Arch) and can administer it at a basic level.
 
 My verifiable achievements include:
 
-- 1st place at the Kolmogorov Readings (2023) - I was the lead developer of a team writing a [3D graphics engine in Vulkan](cgsg).
+- 1st place at the Kolmogorov Readings (2023) - I was a lead developer of a team writing a 3D graphics engine in Vulkan
 - a prize at the regional stage of the All-Russian School Olympiad in programming (2024).
 
 My German is B2, English is C1, and I have a 300-day Japanese streak on [Duolingo](https://www.duolingo.com/profile/deeeear).
 
-Having left [school](school) in the 10th grade, I continue to study every day online, using Wikipedia, [Anki](srs), and Foxford.
+Having left school in the 10th grade, I continue to study every day online, using Wikipedia, [Anki](srs), and Foxford.
 
 My worldview largely aligns with [LessWrong](https://lesswrong.com/) and the Bay Area in general. Although I have never been there physically, my spirit lives there.
 

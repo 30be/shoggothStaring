@@ -1,3 +1,7 @@
+/* SPDX-License-Identifier: MIT
+ *  See LICENSE for details.
+*/
+
 fetch('/search.json')
   .then(response => response.json())
   .then(posts => {

@@ -1,3 +1,6 @@
+-- SPDX-License-Identifier: MIT
+--  See LICENSE for details.
+
 import Data.Aeson
 import Data.Text (stripSuffix)
 import Hakyll
