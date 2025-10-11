@@ -30,7 +30,7 @@ fetch('/search.json')
       filtered.forEach(post => {
         const li = document.createElement('li');
         const a = document.createElement('a');
-        a.href = `/${post.postRoute}`;
+        a.href = `/${post.postRoute.replace(/\.md$/, '')}`;
         a.textContent = `${post.postTitle} (${post.postDate})`;
         li.appendChild(a);
         results.appendChild(li);
