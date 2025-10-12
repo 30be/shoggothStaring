@@ -66,3 +66,7 @@ body {
   overflow-wrap: break-word; 
   word-wrap: break-word;
 }
+
+blockquote {
+  font-size: 0.9em;
+}
