@@ -70,9 +70,9 @@ defaultTemplate item = do
         script ! async "async" ! src "search.js" $ mempty
         googleAnalyticsScript
       body $ do
-        nav ! class_ "main-nav" $ do
-          forM_ headerLinks $ \(link, label) -> (a ! href link $ label) >> " | "
-          input ! type_ "text" ! A.id "search-input" ! placeholder "Search..."
+        nav $ do
+          forM_ headerLinks $ \(link, label) -> a ! href link $ label
+          input ! type_ "text" ! A.id "search-input" ! placeholder "Search"
 
         H.div ! A.id "search-results" $ mempty
         article ! class_ "user-content" $ contents
