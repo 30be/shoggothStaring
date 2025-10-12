@@ -56,7 +56,7 @@
 
       for (let x_norm = start_x_norm; x_norm <= end_x_norm; x_norm += (TIME_SCALE / plotW)) {
         const time_elapsed = x_norm - start_x_norm;
-        const decay = changeDecay ? decayConstant / (1 + start_x_norm / 3) : decayConstant;
+        const decay = changeDecay ? decayConstant / (1 + start_x_norm * 0.7) : decayConstant;
         memoryStrength = decayFunction(time_elapsed, decay, start_strength);
 
         const x_canvas = padding + x_norm * plotW / TIME_SCALE;
