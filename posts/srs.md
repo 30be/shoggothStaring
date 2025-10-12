@@ -3,7 +3,8 @@ title: Spaced repetition
 date: 2025-10-11
 ---
 
-<iframe src="heatmap.html" height="155px" scrolling="no" frameborder="0"></iframe>
+<div id="anki-heatmap">Make sure to have JavaScript enabled</div>
+<script src="anki-heatmap.js"></script>
 
 Above is a heatmap of my Anki usage. It is updated in real time. I know, it is very far from perfect, and that there are more days skipped than not, but I will try to improve that in the future.
 
