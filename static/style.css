@@ -62,3 +62,7 @@ input[type="range"] {
   vertical-align: middle;
 }
 
+body {
+  overflow-wrap: break-word; 
+  word-wrap: break-word;
+}
