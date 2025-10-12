@@ -15,9 +15,9 @@ last-update: 2025-10-10
 - C/C++ (Vulkan, OpenGL, WinAPI, SDL2)
 - Haskell (Hakyll, base)
 - Python (pytorch, numpy, pandas, matplotlib, seaborn)
-- Javascript (React, Nodejs, Express.js, three.js, Rollup(Webpack))
+- JavaScript (React, Node.js, Express.js, three.js, Rollup(Webpack))
 
-Также знаю Kotlin, SQL, Lua, Bash, но без большого опыта.
+Также знаю Kotlin, SQL, Lua, Bash, но без большого опыта. В коде стараюсь держаться принципов [grug](https://grugbrain.dev/).
 
 Использую Linux(Arch), могу его администрировать на базовом уровне.
 
@@ -40,18 +40,18 @@ last-update: 2025-10-10
 
 Этот сайт написан на Haskell [здесь](https://github.com/30be/shoggothStaring/blob/main/main.hs).
 
-#### [Bike on a map(online)](https://30be.github.io/SUM2023/PROJECT/dist/)
+#### [Bike on a map (Online)](https://30be.github.io/SUM2023/PROJECT/dist/)
 
 [![bike](bike.png){width=30%}](bike.png)
 Грузится долго: рассчитан на открытие с ПК.
 Внутри - самодельный 3D-движок, в котором можно покататься на велосипеде с развевающимся флагом. Помимо прочего, можно включить пару десятков тысяч коров с крылышками, фрактал Мандельброта на небе.
 
-#### [Web raymarching system(online)](https://30be.github.io/SUM2024/WebRaymarching/)
+#### [Web raymarching system (Online)](https://30be.github.io/SUM2024/WebRaymarching/)
 
 [![raymarching](raymarching.png){width=30%}](raymarching.png)
 Система рисования 3D-графики с использованием алгоритма raymarching на GPU с помощью динамически создаваемых шейдеров.
 
-#### [Multieditor(online)](https://30be.github.io/MultiEditor/output/index.html)
+#### [Multieditor (Online)](https://30be.github.io/MultiEditor/output/index.html)
 
 [![multieditor](multieditor.png){width=30%}](multieditor.png)
 Незавершенный проект для просмотра объектов, текстур и материалов 3D-модели пользователя.

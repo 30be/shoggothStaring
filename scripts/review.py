@@ -1,3 +1,5 @@
+#!.venv/bin/python
+
 # REQUIRES: pip install google-genai dotenv
 #
 # This script will pipe all my essays through an LLM to check punctuation and grammar mistakes
@@ -16,9 +18,7 @@ load_dotenv()
 if "__PROXIED__" not in sys.argv:
     print("Starting proxy...")
     subprocess.run(
-        ["proxychains", "-q", "python", "scripts/review.py"]
-        + ["__PROXIED__"]
-        + sys.argv[1:]
+        ["proxychains", "-q", "scripts/review.py"] + ["__PROXIED__"] + sys.argv[1:]
     )
     sys.exit()
 

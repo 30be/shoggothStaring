@@ -17,7 +17,7 @@ I have programming experience in the following languages:
 - Python (pytorch, numpy, pandas, matplotlib, seaborn)
 - Javascript (React, Nodejs, Express.js, three.js, Rollup(Webpack))
 
-I also know Kotlin, SQL, Lua, and Bash, but I don't have much experience with them.
+I also know Kotlin, SQL, Lua, and Bash, but I don't have much experience with them. The general coding style I try to adhere to can be described by [grug](https://grugbrain.dev/).
 
 I use Linux (Arch) and can administer it at a basic level.
 
@@ -40,18 +40,18 @@ In random order:
 
 This site is written in Haskell; [the code is here](https://github.com/30be/shoggothStaring/blob/main/main.hs).
 
-#### [Bike on a map(online)](https://30be.github.io/SUM2023/PROJECT/dist/)
+#### [Bike on a map (Online)](https://30be.github.io/SUM2023/PROJECT/dist/)
 
 [![bike](bike.png){width=30%}](bike.png)
 It loads slowly and is best viewed on a PC.
 Inside, you'll find a 3D engine where you can ride a bicycle with a waving flag, featuring tens of thousands of cows with wings, a Mandelbrot fractal in the sky, and customizable controls.
 
-#### [Web raymarching system(online)](https://30be.github.io/SUM2024/WebRaymarching/)
+#### [Web raymarching system (Online)](https://30be.github.io/SUM2024/WebRaymarching/)
 
 [![raymarching](raymarching.png){width=30%}](raymarching.png)
 A system for drawing 3D graphics using the ray marching algorithm on the web with GPU acceleration and dynamic shader creation.
 
-#### [Multieditor(online)](https://30be.github.io/MultiEditor/output/index.html)
+#### [Multieditor (Online)](https://30be.github.io/MultiEditor/output/index.html)
 
 [![multieditor](multieditor.png){width=30%}](multieditor.png)
 An unfinished project for viewing objects, textures, and materials of a user's 3D model.
