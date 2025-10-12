@@ -37,11 +37,12 @@ body {
 </head>
 <body>
 
-<div class="heatmap-container" id="heatmap"></div>
+<div class="heatmap-container" id="heatmap">Make sure to have JavaScript enabled</div>
 
 <script>
     const HEATMAP = document.getElementById('heatmap');
-    const NUM_DAYS = 366; // Display a year's worth of data
+    const NUM_DAYS = 52 * 7; // 52 weeks
+    const SECONDS_PER_DAY = 86400;
 
     async function loadHeatmapData() {
         try {
@@ -49,20 +50,15 @@ body {
             const { start_epoch, counts } = await response.json();
             renderHeatmap(start_epoch, counts);
         } catch (error) {
-            console.error('Error loading heatmap data:', error);
-            const fakeStartEpoch = Math.floor(Date.now() / 1000) - NUM_DAYS * 86400;
-            renderHeatmap(fakeStartEpoch, generateFakeData(NUM_DAYS));
+            HEATMAP.innerHTML = 'Error loading heatmap data:' + error;
         }
     }
 
     function renderHeatmap(startEpoch, data) {
         HEATMAP.innerHTML = '';
 
-        const DAYS_IN_WEEK = 7;
-        const startDate = new Date(startEpoch * 1000);
-        const firstDayOfWeek = startDate.getUTCDay();
-
-        // 1. Padding for alignment
+        // Alignment
+        const firstDayOfWeek = (new Date()).getUTCDay();
         for (let i = 0; i < firstDayOfWeek; i++) {
             const cell = document.createElement('div');
             cell.className = 'day-cell level-0';
@@ -70,39 +66,24 @@ body {
             HEATMAP.appendChild(cell);
         }
 
-        const displayData = Array(NUM_DAYS).fill(0).concat(data).slice(-NUM_DAYS);
-        const monthLabels = [];
-        let currentMonth = -1;
+        const days_no_data = Math.ceil((Date.now() / 1000 - (startEpoch + data.length * SECONDS_PER_DAY)) / SECONDS_PER_DAY)
+        const cells_no_data = Array(days_no_data).fill(0)
+        const displayData = Array(NUM_DAYS).fill(0).concat(data, cells_no_data).slice(-NUM_DAYS);
+
+        // It is messy and not beautiful and should be rewritten
+        startEpoch = (Date.now() - (NUM_DAYS - 1) * SECONDS_PER_DAY * 1000) / 1000
 
         for (let i = 0; i < displayData.length; i++) {
-            const count = displayData[i];
-            // 86400 is seconds in a day
-            const date = new Date((startEpoch + i * 86400) * 1000);
+            const date = new Date((startEpoch + i * SECONDS_PER_DAY) * 1000);
+            const level = (displayData[i] == 0) ? 0 :
+                          (displayData[i] <= 10) ? 1 :
+                          (displayData[i] <= 100) ? 2 :
+                          (displayData[i] <= 400) ? 3 : 4;
+
             const cell = document.createElement('div');
-
-            // Add tooltip with actual date and count
-            // Fixing syntax error in your original code: date.toISOString().split['T'](0)
-            cell.title = `${date.toISOString().split('T')[0]}: ${count} reviews`;
-
-            const level = (count == 0) ? 0 :
-                          (count <= 10) ? 1 :
-                          (count <= 100) ? 2 :
-                          (count <= 400) ? 3 : 4;
+            cell.title = `${date.toISOString().split('T')[0]}: ${displayData[i]} reviews`;
             cell.className = `day-cell level-${level}`;
             HEATMAP.appendChild(cell);
-
-            // Check for new month start - label the start of the month if it's a new week
-            const dayIndexRelativeToStart = firstDayOfWeek + i;
-            if (date.getUTCMonth() !== currentMonth && dayIndexRelativeToStart % DAYS_IN_WEEK === 0) {
-                // Only push a label if we are at the start of a new month and the week starts on Sunday
-                if (currentMonth !== -1 || i === 0) { // Push initial label even if it's not the start of the week
-                    monthLabels.push({
-                        month: date.toLocaleDateString('en-US', { month: 'short' }),
-                        weekIndex: Math.floor(dayIndexRelativeToStart / DAYS_IN_WEEK)
-                    });
-                }
-                currentMonth = date.getUTCMonth();
-            }
         }
       HEATMAP.scrollLeft = HEATMAP.scrollWidth;
     }
