@@ -13,6 +13,9 @@
     overflow-x: scroll;
     overflow-y: hidden;
 }
+#anki-heatmap > :last-child {
+  border: 2px solid black;
+}
 .day-cell {
     width: 20px;
     height: 20px;
