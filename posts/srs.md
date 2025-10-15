@@ -26,12 +26,12 @@ A smart scientist, namely Hermann Ebbinghaus, found out that the [rate of retent
 
 <canvas id="ebbinghaus"></canvas>
 <label for="ebbinghaus-slider">decay:</label>
-<input type="range" id="ebbinghaus-slider" min="0.00" max="0.2" step="0.001" value="0.07">
+<input type="range" id="ebbinghaus-slider" min="0.00" max="0.02" step="0.0001" value="0.01">
 <script src="ebbinghaus.js"></script>
 
 This is sad. But the more we strain our brain with some information and the more we experience it, the slower the decay becomes.
 
-This way we can learn better if we repeat things multiple times. Repetition is the [mother of learning](https://www.royalroad.com/fiction/21220/mother-of-learning)
+This way we can learn better if we repeat things multiple times. Repetition is the [mother of learning](https://www.royalroad.com/fiction/21220/mother-of-learning).
 
 But Ebbinghaus shows us that the timing at which we repeat things is actually very important too. If we repeat things too early, there will be no strain for the brain. If too late - it will be just like learning the thing anew, which is too hard for us.
 

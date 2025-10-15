@@ -55,7 +55,7 @@ schema = types.Schema(
 )
 
 
-def review(filename):
+def review(filename, model="gemini-2.5-pro"):
     if not filename.endswith(".md"):
         print(filename, "is not a markdown file")
         return
@@ -75,7 +75,7 @@ def review(filename):
 
     try:
         response = client.models.generate_content(
-            model="gemini-2.5-pro",
+            model=model,
             contents=prompt,
             config=types.GenerateContentConfig(
                 system_instruction=system_instruction,
@@ -95,10 +95,18 @@ def review(filename):
 
     except Exception as e:
         print(f"Failed to review {filename}. JSON parsing or API error: {e}")
+        raise e
 
 
-if len(sys.argv) == 3:
-    review(sys.argv[2])
-else:
-    for filename in os.listdir(posts_dir):
-        review(filename)
+def go(model):
+    if len(sys.argv) == 3:
+        review(sys.argv[2], model)
+    else:
+        for filename in os.listdir(posts_dir):
+            review(filename, model)
+
+
+try:
+    go("gemini-2.5-pro")
+except:
+    go("gemini-2.5-flash")

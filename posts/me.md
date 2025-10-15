@@ -17,18 +17,14 @@ I have programming experience in the following languages:
 - Python (pytorch, numpy, pandas, matplotlib, seaborn)
 - Javascript (React, Nodejs, Express.js, three.js, Rollup(Webpack))
 
-I also know Kotlin, SQL, Lua, and Bash, but I don't have much experience with them. The general coding style I try to adhere to can be described by [grug](https://grugbrain.dev/).
-
-I use Linux (Arch) and can administer it at a basic level.
+I use Linux (Arch) and can administer it at a basic level. The general coding style I try to adhere to can be described by [grug](https://grugbrain.dev/).
 
 My verifiable achievements include:
 
 - 1st place at the Kolmogorov Readings (2023) - I was a lead developer of a team writing a 3D graphics engine in Vulkan
 - a prize at the regional stage of the All-Russian School Olympiad in programming (2024).
 
-My German is B2, English is C1, and I have a 300-day Japanese streak on [Duolingo](https://www.duolingo.com/profile/deeeear).
-
-Having left school in the 10th grade, I continue to study every day online, using Wikipedia, [Anki](srs), and Foxford.
+My German is B2, English is C1, and I have a 300-day Japanese streak on [Duolingo](https://www.duolingo.com/profile/deeeear). I use [Anki](srs) to continuously improve.
 
 My worldview largely aligns with [LessWrong](https://lesswrong.com/) and the Bay Area in general. Although I have never been there physically, my spirit lives there.
 
